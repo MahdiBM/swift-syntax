@@ -34,9 +34,9 @@ let syntaxRewriterFile = SourceFileSyntax(leadingTrivia: copyrightHeader) {
     DeclSyntax(
       """
       /// The arena in which the parents of rewritten nodes should be allocated.
-      /// 
+      ///
       /// The `SyntaxRewriter` subclass is responsible for generating the rewritten nodes. To incorporate them into the
-      /// tree, all of the rewritten node's parents also need to be re-created. This is the arena in which those 
+      /// tree, all of the rewritten node's parents also need to be re-created. This is the arena in which those
       /// intermediate nodes should be allocated.
       private let arena: SyntaxArena?
       """
@@ -101,10 +101,14 @@ let syntaxRewriterFile = SourceFileSyntax(leadingTrivia: copyrightHeader) {
       /// Override point to choose custom visitation dispatch instead of the
       /// specialized `visit(_:)` methods. Use this instead of those methods if
       /// you intend to dynamically dispatch rewriting behavior.
-      /// - note: If this method returns a non-nil result, the specialized
-      ///         `visit(_:)` methods will not be called for this node and the
+      /// - note: If this method returns a non-nil result, the consequent
+      ///         `visitAny(_:)` methods and the specialized `visit(_:)`
+      ///         methods will not be called for this node and the
       ///         visited node will be replaced by the returned node in the
       ///         rewritten tree.
+      ///         You can call the ``SyntaxWriter.rewrite(_:detach:)``
+      ///         method recursively when returning a non-nil result
+      ///         if you want to visit the node's children anyway.
       open func visitAny(_ node: Syntax) -> Syntax? {
         return nil
       }
