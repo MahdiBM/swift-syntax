@@ -328,6 +328,11 @@ let package = Package(
     ),
 
     .testTarget(
+      name: "SwiftSyntaxMacrosTestingTests",
+      dependencies: ["SwiftDiagnostics", "SwiftSyntax", "SwiftSyntaxMacros", "SwiftSyntaxMacrosTesting"]
+    ),
+
+    .testTarget(
       name: "SwiftSyntaxMacrosTestSupportTests",
       dependencies: ["SwiftDiagnostics", "SwiftSyntax", "SwiftSyntaxMacros", "SwiftSyntaxMacrosTestSupport"]
     ),
