@@ -265,6 +265,17 @@ swift_syntax_library(
 )
 
 swift_syntax_library(
+    name = "SwiftSyntaxMacrosTesting",
+    testonly = True,
+    deps = [
+        ":SwiftSyntax",
+        ":SwiftSyntaxMacroExpansion",
+        ":SwiftSyntaxMacros",
+        ":SwiftSyntaxMacrosGenericTestSupport",
+    ],
+)
+
+swift_syntax_library(
     name = "SwiftSyntaxMacrosTestSupport",
     testonly = True,
     deps = [

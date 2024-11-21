@@ -4,7 +4,7 @@ Learn how to write Swift Macros.
 
 Swift Macros allow you to extend the Swift language by generating code at compile time based on annotations in the source code itself. Conceptually, Macros are compiler extensions. The macro’s generation happens at build time and communicates directly with the compiler, which will incorporate the generated code into the compilation process.
 
-With their tight integration into the compiler and the Swift language, macros use some compiler concepts like syntax trees that are able to represent the entire Swift language. Due to their complexity, macros are an advanced concept and are intended for library authors, who can use them to provide extensions to Swift that would be impossible without macros. Wherever possible, language features like generics, protocols and extensions should be preferred over macros. 
+With their tight integration into the compiler and the Swift language, macros use some compiler concepts like syntax trees that are able to represent the entire Swift language. Due to their complexity, macros are an advanced concept and are intended for library authors, who can use them to provide extensions to Swift that would be impossible without macros. Wherever possible, language features like generics, protocols and extensions should be preferred over macros.
 
 > Note: The core concepts of this article are also available as a video at <https://developer.apple.com/wwdc23/10166>
 
@@ -26,7 +26,7 @@ With their tight integration into the compiler and the Swift language, macros us
 
 ## Macro Overview
 
-A new Swift Macro template can be created from Xcode or the command line. 
+A new Swift Macro template can be created from Xcode or the command line.
 
 - In Xcode, click File -> New -> Package… and select the *Swift Macro* template
 - On the command line, run `swift package init --type macro`
@@ -58,7 +58,7 @@ The last part of the macro links the macro declaration to the macro implementati
 
 ### Macro Implementation
 
-The `StringifyMacro` type is declared in a separate target, which is a compiler plug-in. The compiler will send the macro expression to that plug-in. The plugin processes the macro expression as a SwiftSyntax tree, which is a source-accurate, structural representation of the macro, and it will be the basis on which the macro operates. 
+The `StringifyMacro` type is declared in a separate target, which is a compiler plug-in. The compiler will send the macro expression to that plug-in. The plugin processes the macro expression as a SwiftSyntax tree, which is a source-accurate, structural representation of the macro, and it will be the basis on which the macro operates.
 
 For example, our `#stringify(a + b)` is represented by a `MacroExpansionExprSyntax` node in the following tree:
 
@@ -125,16 +125,16 @@ func testStringifyMacro() {
 }
 ```
 
-This test case uses the `assertMacroExpansion` function from the `SwiftSyntaxMacrosTestSupport` module in the swift-syntax package to check that expanding `#stringify(a + b)` produces the expected result `(a + b, "a + b")`. 
+This test case uses the `assertMacroExpansion` function from the `SwiftSyntaxMacrosTestSupport` module for XCTest tests or from the `SwiftSyntaxMacrosTesting` module for swift-testing tests in the swift-syntax package to check that expanding `#stringify(a + b)` produces the expected result `(a + b, "a + b")`.
 
 Because the test target links against the macro implementation target directly, it doesn’t have access to the macro declaration. The `macros` parameter links the `stringify` macro name to the `StringifyMacro` implementation type.
 
-Since the macro is expanded inside the test’s process, breakpoints can be set inside the macro’s expansion function during test execution. Writing a test case and setting a breakpoint inside the macro is usually the best way to understand how a macro functions at runtime. 
+Since the macro is expanded inside the test’s process, breakpoints can be set inside the macro’s expansion function during test execution. Writing a test case and setting a breakpoint inside the macro is usually the best way to understand how a macro functions at runtime.
 
-> Experiment: Run the test case of the macro template and set a breakpoint in the `expansion` function. 
-> 
-> Print the syntax nodes passed into the `expansion` function by running `po node` in the LLDB debug console. 
-> - Note: In Swift 5.9 the debugger has a bug that disallows printing parameters declared with `some`. To work around it, change the function signature to 
+> Experiment: Run the test case of the macro template and set a breakpoint in the `expansion` function.
+>
+> Print the syntax nodes passed into the `expansion` function by running `po node` in the LLDB debug console.
+> - Note: In Swift 5.9 the debugger has a bug that disallows printing parameters declared with `some`. To work around it, change the function signature to
 > ```
 > public static func expansion<NodeType: FreestandingMacroExpansionSyntax>(of node: NodeType, ...)
 > ```
@@ -162,7 +162,7 @@ Below is an overview of the macro roles. To read more about each role, click on 
 
 ### Motivation
 
-SwiftSyntax contains a `Keyword` enum with all the keywords that can be used in the Swift language. Suppose we need an enum that only contains those keywords that can start type declarations, like `class`, `struct` and `actor` and we need to be able to convert between this type and the `Keyword` type. 
+SwiftSyntax contains a `Keyword` enum with all the keywords that can be used in the Swift language. Suppose we need an enum that only contains those keywords that can start type declarations, like `class`, `struct` and `actor` and we need to be able to convert between this type and the `Keyword` type.
 
 A hand-written implementation could look as follows, which is very repetitive. The goal is to define an `EnumSubset` macro that generates the initializer and the computed property.
 
@@ -208,13 +208,13 @@ Compared to the `stringify` macro, `EnumSubset` differs in two ways:
 
 ### Implement EnumSubset
 
-A possible implementation of `EnumSubsetMacro` can look as follows. 
+A possible implementation of `EnumSubsetMacro` can look as follows.
 
 ```swift
 enum EnumSubsetError: CustomStringConvertible, Error {
   case onlyApplicableToEnum
   case noGenericParameterName
-  
+
   var description: String {
     switch self {
     case .onlyApplicableToEnum: return "@EnumSubset can only be applied to an enum"
@@ -233,7 +233,7 @@ public enum EnumSubsetMacro: MemberMacro {
       throw EnumSubsetError.onlyApplicableToEnum
     }
 
-    // Extract the name of the generic parameter. 
+    // Extract the name of the generic parameter.
     // See section *Inspect the SwiftSyntax Tree* for more details on building this expression.
     guard let supersetType = attribute,
       .attributeName.as(SimpleTypeIdentifierSyntax.self)?
@@ -242,12 +242,12 @@ public enum EnumSubsetMacro: MemberMacro {
       .argumentType else {
       throw EnumSubsetError.noGenericParameterName
     }
-    
+
     // Extract all the enum elements
     let members = enumDecl.memberBlock.members
     let caseDecls = members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
     let elements = caseDecls.flatMap { $0.elements }
-    
+
     // Build the initializer using a result builder
     let initializer = try InitializerDeclSyntax("init?(_ superset: \(supersetType))") {
       try SwitchExprSyntax("switch superset") {
@@ -262,7 +262,7 @@ public enum EnumSubsetMacro: MemberMacro {
         SwitchCaseSyntax("default: return nil")
       }
     }
-    
+
     return [DeclSyntax(initializer)]
   }
 }
@@ -270,7 +270,7 @@ public enum EnumSubsetMacro: MemberMacro {
 
 ## Inspect the SwiftSyntax Tree
 
-One of the best way to explore the syntax trees is by example. <https://swift-ast-explorer.com> is a great webpage that allows the shows the syntax tree of entered Swift code.  
+One of the best way to explore the syntax trees is by example. <https://swift-ast-explorer.com> is a great webpage that allows the shows the syntax tree of entered Swift code.
 
 > Experiment: Try pasting the following code into <https://swift-ast-explorer.com> and compare the inspect syntax tree to understand the above code that extracts the name of the generic parameter in `EnumSubsetMacro.expansion`.
 > ```
@@ -281,7 +281,7 @@ Alternatively, the syntax tree can be printed in the debugger. When the debugger
 
 ## Building Syntax Nodes
 
-There are three core approaches to build syntax nodes: Parsing from string literals, result builder initializers and memberwise initializers. 
+There are three core approaches to build syntax nodes: Parsing from string literals, result builder initializers and memberwise initializers.
 
 The `stringify` macro created its result type, an `ExprSyntax`, from a string literal. As described in that section, this invokes the Swift parser to parse the contents of the string literal into a syntax tree. This technique works well for statically known trees, or trees with a fixed number of parameters.
 
@@ -295,5 +295,5 @@ Macros are not always applicable. For example, it doesn’t make sense to apply 
 
 There are two ways to emit this error:
 
-1. Throw an error from the `expansion` function. This generates a compilation error on the line of the attribute. This is the technique that the above example uses. 
+1. Throw an error from the `expansion` function. This generates a compilation error on the line of the attribute. This is the technique that the above example uses.
 2. Add it as a diagnostic with  ``MacroExpansionContext/diagnose(_:)``. This allows further customization, like changing the location, emitting a warning instead of an error, or even providing Fix-Its.

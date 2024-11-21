@@ -1,4 +1,4 @@
-# This is manifest file for the Swift Package Index for it to 
+# This is manifest file for the Swift Package Index for it to
 # auto-generate and host DocC documentation.
 # For reference see https://swiftpackageindex.com/swiftpackageindex/spimanifest/documentation/spimanifest/commonusecases#Host-DocC-documentation-in-the-Swift-Package-Index.
 
@@ -23,4 +23,5 @@ builder:
       - SwiftSyntaxMacroExpansion
       - SwiftSyntaxMacrosGenericTestSupport
       - SwiftSyntaxMacrosTestSupport
+      - SwiftSyntaxMacrosTesting
       custom_documentation_parameters: [--experimental-skip-synthesized-symbols]

@@ -38,6 +38,7 @@ if buildDynamicLibrary {
     .library(name: "SwiftSyntaxBuilder", targets: ["SwiftSyntaxBuilder"]),
     .library(name: "SwiftSyntaxMacros", targets: ["SwiftSyntaxMacros"]),
     .library(name: "SwiftSyntaxMacroExpansion", targets: ["SwiftSyntaxMacroExpansion"]),
+    .library(name: "SwiftSyntaxMacrosTesting", targets: ["SwiftSyntaxMacrosTesting"]),
     .library(name: "SwiftSyntaxMacrosTestSupport", targets: ["SwiftSyntaxMacrosTestSupport"]),
     .library(name: "SwiftSyntaxMacrosGenericTestSupport", targets: ["SwiftSyntaxMacrosGenericTestSupport"]),
     .library(name: "_SwiftCompilerPluginMessageHandling", targets: ["SwiftCompilerPluginMessageHandling"]),
@@ -285,6 +286,18 @@ let package = Package(
         "SwiftSyntaxMacros",
         "SwiftSyntaxMacroExpansion",
         "SwiftSyntaxMacrosTestSupport",
+      ]
+    ),
+
+    // MARK: SwiftSyntaxMacrosTesting
+
+    .target(
+      name: "SwiftSyntaxMacrosTesting",
+      dependencies: [
+        "SwiftSyntax",
+        "SwiftSyntaxMacroExpansion",
+        "SwiftSyntaxMacros",
+        "SwiftSyntaxMacrosGenericTestSupport",
       ]
     ),
 
